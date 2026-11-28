@@ -1,7 +1,9 @@
 import csv
 import unicodedata
 
+# Project Configuration
 FILIPINO_GIVEN_NAMES_FILE_PATH = './data/filipino_given_names.csv'
+K = 2  # Context Count
 
 
 def read_filipino_names():
@@ -26,10 +28,11 @@ def remove_diacritics(text):
 
 
 def main():
+    # List of Filipino Names
     names = read_filipino_names()
-    deaccented_names = [remove_diacritics(name) for name in names]
 
-    print(deaccented_names)
+    # Remove the diacritics for each string in names
+    names = [remove_diacritics(name) for name in names]
 
 
 if __name__ == "__main__":
