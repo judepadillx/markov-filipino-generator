@@ -19,12 +19,20 @@ def read_filipino_names():
     return names
 
 
-def deaccent(text):
+def deaccent(text) -> str:
     # Decompose characters into base letter + combining mark
     normalized = unicodedata.normalize('NFD', text)
 
     # Filter out non-spacing marks (diacritics)
     return ''.join(c for c in normalized if not unicodedata.combining(c))
+
+
+def mark(text) -> str:
+    start_marker = '^' * K
+    end_marker = '$'
+
+    # Mark beginning and ending of text
+    return start_marker + text + end_marker
 
 
 def main():
@@ -33,6 +41,9 @@ def main():
 
     # Deaccent each string in names
     names = [deaccent(name) for name in names]
+
+    # Mark beginning and ending of names
+    names = [mark(name) for name in names]
 
 
 if __name__ == "__main__":
