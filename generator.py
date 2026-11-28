@@ -27,9 +27,9 @@ def remove_diacritics(text):
 
 def main():
     names = read_filipino_names()
-    cleaned_names = [remove_diacritics(name) for name in names]
+    deaccented_names = [remove_diacritics(name) for name in names]
 
-    print(cleaned_names)
+    print(deaccented_names)
 
 
 if __name__ == "__main__":
