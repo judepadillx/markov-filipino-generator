@@ -47,13 +47,14 @@ def main():
     # Get the list of Filipino names
     names = read_filipino_names()
 
+    # Lowercase Filipino Names
+    names = [name.lower() for name in names]
+
     # Deaccent each string in names
     names = [deaccent(name) for name in names]
 
     # Mark beginning and ending of names
     names = [mark(name, k) for name in names]
-
-    print(names)
 
 
 if __name__ == "__main__":
