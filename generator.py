@@ -9,7 +9,7 @@ FILIPINO_GIVEN_NAMES_FILE_PATH = './data/filipino_given_names.csv'
 def configure_project():
     k = int(input("Context length: "))
     generate_count = input("No. names to generate (1): ")
-    generate_count = input(generate_count) if generate_count else 1
+    generate_count = int(generate_count) if generate_count else 1
 
     return k, generate_count
 
