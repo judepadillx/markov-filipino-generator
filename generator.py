@@ -40,6 +40,43 @@ def mark(text, k) -> str:
     return start_marker + text + end_marker
 
 
+def train(names, k):
+    markov_chain: dict[str, dict[str, float]] = {}
+
+    # Count each occurences of next letters given the occuring contexts for all names
+    for name in names:
+        context = ""
+
+        for t in range(k, len(name)):
+            context = name[t-k:t]
+            next_char = name[t]
+
+            # Add context as key in Markov Chain if it does not exist yet
+            if context not in markov_chain:
+                markov_chain[context] = {}
+
+            # Increase next character count in markov chain given the context
+            if next_char not in markov_chain[context]:
+                markov_chain[context][next_char] = 1
+            else:
+                markov_chain[context][next_char] += 1
+
+    # Calculate the probabilities
+    for context in markov_chain:
+        # Calculate the total next letter occurences given the current context
+        total_next_letters_occurences = 0
+
+        for next_letter_count in markov_chain[context].values():
+            total_next_letters_occurences += next_letter_count
+
+        # Calculate the probability for each next letter
+        for next_letter, next_letter_count in markov_chain[context].items():
+            markov_chain[context][next_letter] = next_letter_count / \
+                total_next_letters_occurences
+
+    return markov_chain
+
+
 def main():
     # Configure project
     k = configure_project()
@@ -55,6 +92,8 @@ def main():
 
     # Mark beginning and ending of names
     names = [mark(name, k) for name in names]
+
+    train(names, k)
 
 
 if __name__ == "__main__":
