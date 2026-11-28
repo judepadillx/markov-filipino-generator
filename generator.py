@@ -1,5 +1,6 @@
 import csv
 import unicodedata
+from markov_chain import MarkovChain
 
 # Project Configuration
 FILIPINO_GIVEN_NAMES_FILE_PATH = './data/filipino_given_names.csv'
@@ -32,69 +33,12 @@ def deaccent(text) -> str:
     return ''.join(c for c in normalized if not unicodedata.combining(c))
 
 
-def mark(text, k) -> str:
-    start_marker = '^' * k
-    end_marker = '$'
-
-    # Mark beginning and ending of text
-    return start_marker + text + end_marker
-
-
-def train(names, k):
-    """
-    markov_chain : dict = {
-        context : str = {
-            'occurence': int,
-            'next-letters': {
-                letter : str = {
-                    'occurence': int,
-                    'probability': float
-                }
-            }
-        }
-    }
-    """
-
-    markov_chain = {}
-
-    # For each name, count each occurences of next letters given the sequential occuring contexts
-    for name in names:
-        # Mark beginning and ending of name
-        name = mark(name, k)
-
-        context = ""
-
-        for t in range(k, len(name)):
-            context = name[t-k:t]
-            next_letter = name[t]
-
-            # Increment context occurence whenever it appears
-            if context not in markov_chain:
-                markov_chain[context] = {'occurence': 1, 'next-letters': {}}
-            else:
-                markov_chain[context]['occurence'] += 1
-
-            # Increment next character count in markov chain given the context
-            if next_letter not in markov_chain[context]['next-letters']:
-                markov_chain[context]['next-letters'][next_letter] = {
-                    'occurence': 1,
-                    'probability': 0
-                }
-            else:
-                markov_chain[context]['next-letters'][next_letter]['occurence'] += 1
-
-    # Calculate the probabilities
-    for context, context_data in markov_chain.items():
-        for next_letter, next_letter_data in markov_chain[context]['next-letters'].items():
-            markov_chain[context]['next-letters'][next_letter]['probability'] = next_letter_data['occurence'] / \
-                context_data['occurence']
-
-    return markov_chain
-
-
 def main():
     # Configure project
     k = configure_project()
+
+    # Initialize Markov Chain
+    markov_chain = MarkovChain()
 
     # Get the list of Filipino names
     names = read_filipino_names()
@@ -105,10 +49,10 @@ def main():
     # Deaccent each string in names
     names = [deaccent(name) for name in names]
 
-    # Train for Markov Chain
-    markov_chain = train(names, k)
+    # Train Markov Chain
+    markov_chain.train(names, k)
 
-    print(markov_chain)
+    print(markov_chain.contexts.keys())
 
 
 if __name__ == "__main__":
