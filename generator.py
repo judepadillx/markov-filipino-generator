@@ -43,8 +43,11 @@ def mark(text, k) -> str:
 def train(names, k):
     markov_chain: dict[str, dict[str, float]] = {}
 
-    # Count each occurences of next letters given the occuring contexts for all names
+    # For each name, count each occurences of next letters given the sequential occuring contexts
     for name in names:
+        # Mark beginning and ending of name
+        name = mark(name, k)
+
         context = ""
 
         for t in range(k, len(name)):
@@ -90,10 +93,10 @@ def main():
     # Deaccent each string in names
     names = [deaccent(name) for name in names]
 
-    # Mark beginning and ending of names
-    names = [mark(name, k) for name in names]
+    # Train for Markov Chain
+    markov_chain = train(names, k)
 
-    train(names, k)
+    print(markov_chain)
 
 
 if __name__ == "__main__":
