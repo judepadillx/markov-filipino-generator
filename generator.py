@@ -3,7 +3,12 @@ import unicodedata
 
 # Project Configuration
 FILIPINO_GIVEN_NAMES_FILE_PATH = './data/filipino_given_names.csv'
-K = 2  # Context Count
+
+
+def configure_project():
+    k = int(input("Context length: "))
+
+    return k
 
 
 def read_filipino_names():
@@ -27,8 +32,8 @@ def deaccent(text) -> str:
     return ''.join(c for c in normalized if not unicodedata.combining(c))
 
 
-def mark(text) -> str:
-    start_marker = '^' * K
+def mark(text, k) -> str:
+    start_marker = '^' * k
     end_marker = '$'
 
     # Mark beginning and ending of text
@@ -36,6 +41,9 @@ def mark(text) -> str:
 
 
 def main():
+    # Configure project
+    k = configure_project()
+
     # Get the list of Filipino names
     names = read_filipino_names()
 
@@ -43,7 +51,9 @@ def main():
     names = [deaccent(name) for name in names]
 
     # Mark beginning and ending of names
-    names = [mark(name) for name in names]
+    names = [mark(name, k) for name in names]
+
+    print(names)
 
 
 if __name__ == "__main__":
