@@ -8,8 +8,10 @@ FILIPINO_GIVEN_NAMES_FILE_PATH = './data/filipino_given_names.csv'
 
 def configure_project():
     k = int(input("Context length: "))
+    generate_count = input("No. names to generate (1): ")
+    generate_count = input(generate_count) if generate_count else 1
 
-    return k
+    return k, generate_count
 
 
 def read_filipino_names():
@@ -35,7 +37,7 @@ def deaccent(text) -> str:
 
 def main():
     # Configure project
-    k = configure_project()
+    k, generate_count = configure_project()
 
     # Initialize Markov Chain
     markov_chain = MarkovChain(k)
@@ -52,7 +54,8 @@ def main():
     # Train Markov Chain
     markov_chain.train(names)
 
-    print(markov_chain.contexts.keys())
+    for _ in range(generate_count):
+        print(markov_chain.generate())
 
 
 if __name__ == "__main__":

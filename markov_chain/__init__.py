@@ -40,8 +40,54 @@ class MarkovChain():
         context = text
 
         while text[-1] != self.end_marker:
-            x = random.uniform(0, 1)
+            sample = random.uniform(0, 1)
 
-    def _mark(self, text) -> str:
+            cumulative_distribution = self._build_cumulative_distribution(
+                context)
+
+            for entry in cumulative_distribution:
+                scope = entry['scope']
+                letter = entry['letter']
+
+                if scope['min'] <= sample and sample < scope['max']:
+                    text += letter
+                    break
+
+            # Update context for the next iteration
+            context = context[1:] + text[-1]
+
+        return self._strip_mark(text)
+
+    def _build_cumulative_distribution(self, context):
+        """Using inverse transform sampling, this builds a cumulative distribution for all possible next letter given a context"""
+        cumulative_distribution: list[dict] = []
+        min_range = 0
+        max_range = 0
+
+        for letter, letter_data in self.contexts[context].next_letters.items():
+            # Calculate max range by getting the current cumulative probability
+            max_range = min_range + letter_data.probability
+
+            # Construct the current cumulative distribution
+            current = {
+                'scope': {
+                    'min': min_range,
+                    'max': max_range
+                },
+                'letter': letter
+            }
+
+            cumulative_distribution.append(current)
+
+            # Update min range for next iteration
+            min_range = max_range
+
+        return cumulative_distribution
+
+    def _mark(self, text):
         # Mark beginning and ending of text
         return self.start_marker + text + self.end_marker
+
+    def _strip_mark(self, text: str):
+        # Remove beginning and ending marks of text
+        return text.removeprefix(self.start_marker).removesuffix(self.end_marker)
