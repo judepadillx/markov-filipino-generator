@@ -28,10 +28,10 @@ def remove_diacritics(text):
 
 
 def main():
-    # List of Filipino Names
+    # Get the list of Filipino names
     names = read_filipino_names()
 
-    # Remove the diacritics for each string in names
+    # Deaccent each string in names
     names = [remove_diacritics(name) for name in names]
 
 
