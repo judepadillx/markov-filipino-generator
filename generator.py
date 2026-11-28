@@ -50,7 +50,7 @@ def main():
     names = [deaccent(name) for name in names]
 
     # Train Markov Chain
-    markov_chain.train(names, k)
+    markov_chain.train(names)
 
     print(markov_chain.contexts.keys())
 
