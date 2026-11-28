@@ -41,7 +41,21 @@ def mark(text, k) -> str:
 
 
 def train(names, k):
-    markov_chain: dict[str, dict[str, dict[str, int | float]]] = {}
+    """
+    markov_chain : dict = {
+        context : str = {
+            'occurence': int,
+            'next-letters': {
+                letter : str = {
+                    'occurence': int,
+                    'probability': float
+                }
+            }
+        }
+    }
+    """
+
+    markov_chain = {}
 
     # For each name, count each occurences of next letters given the sequential occuring contexts
     for name in names:
@@ -54,32 +68,26 @@ def train(names, k):
             context = name[t-k:t]
             next_letter = name[t]
 
-            # Add context as key in Markov Chain if it does not exist yet
+            # Increment context occurence whenever it appears
             if context not in markov_chain:
-                markov_chain[context] = {}
+                markov_chain[context] = {'occurence': 1, 'next-letters': {}}
+            else:
+                markov_chain[context]['occurence'] += 1
 
-            # Increase next character count in markov chain given the context
-            if next_letter not in markov_chain[context]:
-                markov_chain[context][next_letter] = {
-                    'occurence': 1
+            # Increment next character count in markov chain given the context
+            if next_letter not in markov_chain[context]['next-letters']:
+                markov_chain[context]['next-letters'][next_letter] = {
+                    'occurence': 1,
+                    'probability': 0
                 }
             else:
-                markov_chain[context][next_letter]['occurence'] += 1
+                markov_chain[context]['next-letters'][next_letter]['occurence'] += 1
 
     # Calculate the probabilities
-    for context in markov_chain:
-        # Calculate the total next letter occurences given the current context
-        total_next_letters_occurences = 0
-
-        for next_letter_data in markov_chain[context].values():
-            total_next_letters_occurences += next_letter_data['occurence']
-
-        # Calculate the probability for each next letter
-        for next_letter, next_letter_data in markov_chain[context].items():
-            occurence = next_letter_data['occurence']
-
-            markov_chain[context][next_letter]['probability'] = occurence / \
-                total_next_letters_occurences
+    for context, context_data in markov_chain.items():
+        for next_letter, next_letter_data in markov_chain[context]['next-letters'].items():
+            markov_chain[context]['next-letters'][next_letter]['probability'] = next_letter_data['occurence'] / \
+                context_data['occurence']
 
     return markov_chain
 
