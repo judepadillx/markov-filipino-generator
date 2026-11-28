@@ -47,7 +47,6 @@ Create a CSV file with the following columns:
 - Do not combine multiple names into a single cell.
 - Properly escape commas, quotation marks, and special characters according to CSV standards.
 - Use UTF-8 encoding to preserve Filipino characters and diacritics.
-- Do not include headers, explanations, notes, or Markdown formatting inside the CSV data itself.
 - Leave unavailable information blank instead of making assumptions.
 
 ### Completeness verification
