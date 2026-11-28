@@ -41,7 +41,7 @@ def mark(text, k) -> str:
 
 
 def train(names, k):
-    markov_chain: dict[str, dict[str, float]] = {}
+    markov_chain: dict[str, dict[str, dict[str, int | float]]] = {}
 
     # For each name, count each occurences of next letters given the sequential occuring contexts
     for name in names:
@@ -52,29 +52,33 @@ def train(names, k):
 
         for t in range(k, len(name)):
             context = name[t-k:t]
-            next_char = name[t]
+            next_letter = name[t]
 
             # Add context as key in Markov Chain if it does not exist yet
             if context not in markov_chain:
                 markov_chain[context] = {}
 
             # Increase next character count in markov chain given the context
-            if next_char not in markov_chain[context]:
-                markov_chain[context][next_char] = 1
+            if next_letter not in markov_chain[context]:
+                markov_chain[context][next_letter] = {
+                    'occurence': 1
+                }
             else:
-                markov_chain[context][next_char] += 1
+                markov_chain[context][next_letter]['occurence'] += 1
 
     # Calculate the probabilities
     for context in markov_chain:
         # Calculate the total next letter occurences given the current context
         total_next_letters_occurences = 0
 
-        for next_letter_count in markov_chain[context].values():
-            total_next_letters_occurences += next_letter_count
+        for next_letter_data in markov_chain[context].values():
+            total_next_letters_occurences += next_letter_data['occurence']
 
         # Calculate the probability for each next letter
-        for next_letter, next_letter_count in markov_chain[context].items():
-            markov_chain[context][next_letter] = next_letter_count / \
+        for next_letter, next_letter_data in markov_chain[context].items():
+            occurence = next_letter_data['occurence']
+
+            markov_chain[context][next_letter]['probability'] = occurence / \
                 total_next_letters_occurences
 
     return markov_chain
