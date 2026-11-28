@@ -38,7 +38,7 @@ def main():
     k = configure_project()
 
     # Initialize Markov Chain
-    markov_chain = MarkovChain()
+    markov_chain = MarkovChain(k)
 
     # Get the list of Filipino names
     names = read_filipino_names()
