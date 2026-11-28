@@ -19,7 +19,7 @@ def read_filipino_names():
     return names
 
 
-def remove_diacritics(text):
+def deaccent(text):
     # Decompose characters into base letter + combining mark
     normalized = unicodedata.normalize('NFD', text)
 
@@ -32,7 +32,7 @@ def main():
     names = read_filipino_names()
 
     # Deaccent each string in names
-    names = [remove_diacritics(name) for name in names]
+    names = [deaccent(name) for name in names]
 
 
 if __name__ == "__main__":
