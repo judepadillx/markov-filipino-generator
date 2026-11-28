@@ -17,10 +17,19 @@ def read_filipino_names():
     return names
 
 
+def remove_diacritics(text):
+    # Decompose characters into base letter + combining mark
+    normalized = unicodedata.normalize('NFD', text)
+
+    # Filter out non-spacing marks (diacritics)
+    return ''.join(c for c in normalized if not unicodedata.combining(c))
+
+
 def main():
     names = read_filipino_names()
+    cleaned_names = [remove_diacritics(name) for name in names]
 
-    print(names)
+    print(cleaned_names)
 
 
 if __name__ == "__main__":
